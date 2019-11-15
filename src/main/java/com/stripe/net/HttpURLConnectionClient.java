@@ -2,6 +2,7 @@ package com.stripe.net;
 
 import com.stripe.Stripe;
 import com.stripe.exception.ApiConnectionException;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -11,7 +12,6 @@ import java.net.PasswordAuthentication;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Scanner;
 import lombok.Cleanup;
 
 public class HttpURLConnectionClient extends HttpClient {
@@ -130,11 +130,12 @@ public class HttpURLConnectionClient extends HttpClient {
   }
 
   private static String getResponseBody(InputStream responseStream) throws IOException {
-    try (final Scanner scanner = new Scanner(responseStream, ApiResource.CHARSET)) {
-      // \A is the beginning of the stream boundary
-      final String responseBody = scanner.useDelimiter("\\A").next();
-      responseStream.close();
-      return responseBody;
+    final ByteArrayOutputStream result = new ByteArrayOutputStream();
+    final byte[] buffer = new byte[1024];
+    int length;
+    while ((length = responseStream.read(buffer)) != -1) {
+      result.write(buffer, 0, length);
     }
+    return result.toString(ApiResource.CHARSET);
   }
 }
