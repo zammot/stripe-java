@@ -33,7 +33,7 @@ implementation "com.stripe:stripe-java:17.1.0"
 You'll need to manually install the following JARs:
 
 * The Stripe JAR from https://github.com/stripe/stripe-java/releases/latest
-* [Google Gson](https://github.com/google/gson) from <https://repo1.maven.org/maven2/com/google/code/gson/gson/2.8.5/gson-2.8.5.jar>.
+* [Google Gson](https://github.com/google/gson) from <https://repo1.maven.org/maven2/com/google/code/gson/gson/2.8.6/gson-2.8.6.jar>.
 
 ### [ProGuard](https://www.guardsquare.com/en/products/proguard)
 
