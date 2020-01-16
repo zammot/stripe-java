@@ -2,26 +2,34 @@ package com.stripe.net;
 
 import com.stripe.Stripe;
 import java.util.Map;
-import lombok.EqualsAndHashCode;
+import lombok.Data;
+import lombok.Value;
+import lombok.experimental.Accessors;
 
-@EqualsAndHashCode(callSuper = false)
+@Value
 public class RequestOptions {
-  private final String apiKey;
-  private final String clientId;
-  private final String idempotencyKey;
-  private final String stripeAccount;
+  String apiKey;
+
+  String clientId;
+
+  String idempotencyKey;
+
+  String stripeAccount;
+
   /** Stripe version always set at {@link Stripe#API_VERSION}. */
-  private final String stripeVersion = Stripe.API_VERSION;
+  String stripeVersion = Stripe.API_VERSION;
+
   /**
    * Stripe version override when made on behalf of others. This can be used when the returned
    * response will not be deserialized into the current classes pinned to {@link Stripe#VERSION}.
    */
-  private final String stripeVersionOverride;
+  String stripeVersionOverride;
 
-  private final int connectTimeout;
-  private final int readTimeout;
+  int connectTimeout;
 
-  private final int maxNetworkRetries;
+  int readTimeout;
+
+  int maxNetworkRetries;
 
   public static RequestOptions getDefault() {
     return new RequestOptions(
@@ -54,42 +62,6 @@ public class RequestOptions {
     this.maxNetworkRetries = maxNetworkRetries;
   }
 
-  public String getApiKey() {
-    return apiKey;
-  }
-
-  public String getClientId() {
-    return clientId;
-  }
-
-  public String getIdempotencyKey() {
-    return idempotencyKey;
-  }
-
-  public String getStripeAccount() {
-    return stripeAccount;
-  }
-
-  public String getStripeVersion() {
-    return stripeVersion;
-  }
-
-  public String getStripeVersionOverride() {
-    return stripeVersionOverride;
-  }
-
-  public int getReadTimeout() {
-    return readTimeout;
-  }
-
-  public int getConnectTimeout() {
-    return connectTimeout;
-  }
-
-  public int getMaxNetworkRetries() {
-    return maxNetworkRetries;
-  }
-
   public static RequestOptionsBuilder builder() {
     return new RequestOptionsBuilder();
   }
@@ -103,14 +75,23 @@ public class RequestOptions {
     return new RequestOptionsBuilder().setApiKey(this.apiKey).setStripeAccount(this.stripeAccount);
   }
 
+  @Data
+  @Accessors(fluent = false, chain = true)
   public static final class RequestOptionsBuilder {
     private String apiKey;
+
     private String clientId;
+
     private String idempotencyKey;
+
     private String stripeAccount;
+
     private String stripeVersionOverride;
+
     private int connectTimeout;
+
     private int readTimeout;
+
     private int maxNetworkRetries;
 
     /**
@@ -125,10 +106,6 @@ public class RequestOptions {
       this.maxNetworkRetries = Stripe.getMaxNetworkRetries();
     }
 
-    public String getApiKey() {
-      return apiKey;
-    }
-
     public RequestOptionsBuilder setApiKey(String apiKey) {
       this.apiKey = normalizeApiKey(apiKey);
       return this;
@@ -137,10 +114,6 @@ public class RequestOptions {
     public RequestOptionsBuilder clearApiKey() {
       this.apiKey = null;
       return this;
-    }
-
-    public String getClientId() {
-      return clientId;
     }
 
     public RequestOptionsBuilder setClientId(String clientId) {
@@ -153,82 +126,13 @@ public class RequestOptions {
       return this;
     }
 
-    public RequestOptionsBuilder setIdempotencyKey(String idempotencyKey) {
-      this.idempotencyKey = idempotencyKey;
-      return this;
-    }
-
-    public int getConnectTimeout() {
-      return connectTimeout;
-    }
-
-    /**
-     * Sets the timeout value that will be used for making new connections to the Stripe API (in
-     * milliseconds).
-     *
-     * @param timeout timeout value in milliseconds
-     */
-    public RequestOptionsBuilder setConnectTimeout(int timeout) {
-      this.connectTimeout = timeout;
-      return this;
-    }
-
-    public int getReadTimeout() {
-      return readTimeout;
-    }
-
-    /**
-     * Sets the timeout value that will be used when reading data from an established connection to
-     * the Stripe API (in milliseconds).
-     *
-     * <p>Note that this value should be set conservatively because some API requests can take time
-     * and a short timeout increases the likelihood of causing a problem in the backend.
-     *
-     * @param timeout timeout value in milliseconds
-     */
-    public RequestOptionsBuilder setReadTimeout(int timeout) {
-      this.readTimeout = timeout;
-      return this;
-    }
-
-    public int getMaxNetworkRetries() {
-      return maxNetworkRetries;
-    }
-
-    /**
-     * Sets the maximum number of times the request will be retried in the event of a failure.
-     *
-     * @param maxNetworkRetries the number of times to retry the request
-     */
-    public RequestOptionsBuilder setMaxNetworkRetries(int maxNetworkRetries) {
-      this.maxNetworkRetries = maxNetworkRetries;
-      return this;
-    }
-
     public RequestOptionsBuilder clearIdempotencyKey() {
       this.idempotencyKey = null;
       return this;
     }
 
-    public String getIdempotencyKey() {
-      return this.idempotencyKey;
-    }
-
-    public String getStripeAccount() {
-      return this.stripeAccount;
-    }
-
-    public RequestOptionsBuilder setStripeAccount(String stripeAccount) {
-      this.stripeAccount = stripeAccount;
-      return this;
-    }
-
     public RequestOptionsBuilder clearStripeAccount() {
-      return setStripeAccount(null);
-    }
-
-    public String getStripeVersionOverride() {
-      return this.stripeVersionOverride;
+      return this.setStripeAccount(null);
     }
 
     /**
@@ -313,7 +217,7 @@ public class RequestOptions {
     if (normalized.length() > 255) {
       throw new InvalidRequestOptionsException(
           String.format(
-              "Idempotency Key length was %d, which is larger than the 255 character " + "maximum!",
+              "Idempotency Key length was %d, which is larger than the 255 character maximum!",
               normalized.length()));
     }
     return normalized;
