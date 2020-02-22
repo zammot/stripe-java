@@ -4,7 +4,8 @@ buildscript {
         //Add only for SNAPSHOT versions
         //maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
     }
-    dependencies {
+    dependencies {Implementierung " com.stripe: stripe-java: 17.12.0 "
+
         classpath "io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.21.1"
     }
 }
